@@ -1,13 +1,13 @@
-package com.example.projeto_001.ui.slideshow
+package com.example.projeto_001.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class SlideshowViewModel : ViewModel() {
+class AllGuestsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is slideshow Fragment"
+        value = "This is all guests Fragment"
     }
     val text: LiveData<String> = _text
 }

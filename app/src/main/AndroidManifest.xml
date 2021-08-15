@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Projeto_001">
         <activity
-            android:name=".MainActivity"
+            android:name=".view.GuestFormActivity"
+            android:exported="true" />
+        <activity
+            android:name=".view.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.Projeto_001.NoActionBar">

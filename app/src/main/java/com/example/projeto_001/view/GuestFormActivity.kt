@@ -8,12 +8,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.projeto_001.viewmodel.GuestFormViewModel
 import com.example.projeto_001.R
+import com.example.projeto_001.service.constants.GuestConstants
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_guest_form.*
 
 class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mViewModel: GuestFormViewModel
+    private var mGuestId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +25,9 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
         setListeners()
         observe()
+        loadData()
 
+        radioPresence.isChecked = true
     }
 
     override fun onClick(v: View) {
@@ -33,8 +37,16 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             val name = edit_name.text.toString()
             val presence = radioPresence.isChecked
 
-            mViewModel.save(name, presence)
+            mViewModel.save(mGuestId, name, presence)
 
+        }
+    }
+
+    private fun loadData() {
+        val bundle = intent.extras
+        if (bundle != null) {
+            mGuestId = bundle.getInt(GuestConstants.GUESTID)
+            mViewModel.load(mGuestId)
         }
     }
 
@@ -53,6 +65,15 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
                 Toast.makeText(applicationContext, "Falha", Toast.LENGTH_SHORT).show()
             }
             finish()
+        })
+
+        mViewModel.guest.observe(this, Observer {
+            edit_name.setText(it.name)
+            if (it.presence) {
+                radioPresence.isChecked = true
+            } else {
+                radioAbsent.isChecked = true
+            }
         })
 
     }

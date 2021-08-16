@@ -1,5 +1,6 @@
 package com.example.projeto_001.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projeto_001.R
 import com.example.projeto_001.databinding.FragmentAllBinding
+import com.example.projeto_001.service.constants.GuestConstants
 import com.example.projeto_001.view.adapter.GuestAdapter
+import com.example.projeto_001.view.listener.GuestListener
 import com.example.projeto_001.viewmodel.AllGuestsViewModel
 import kotlinx.android.synthetic.main.fragment_all.*
 
@@ -21,6 +24,7 @@ class AllGuestsFragment : Fragment() {
     private lateinit var allGuestsViewModel: AllGuestsViewModel
     private var _binding: FragmentAllBinding? = null
     private val mAdapter: GuestAdapter = GuestAdapter()
+    private lateinit var mListener: GuestListener
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -41,6 +45,19 @@ class AllGuestsFragment : Fragment() {
         recycler.layoutManager = LinearLayoutManager(context)
         recycler.adapter = mAdapter
 
+        mListener = object : GuestListener {
+            override fun onClick(id: Int) {
+                val intent = Intent(context , GuestFormActivity::class.java)
+
+                val bundle = Bundle()
+                bundle.putInt(GuestConstants.GUESTID, id)
+
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        }
+
+        mAdapter.attachListener(mListener)
         observer()
 
         return root

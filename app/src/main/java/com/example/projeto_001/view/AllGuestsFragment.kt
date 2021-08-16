@@ -8,13 +8,19 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.projeto_001.databinding.FragmentHomeBinding
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.projeto_001.R
+import com.example.projeto_001.databinding.FragmentAllBinding
+import com.example.projeto_001.view.adapter.GuestAdapter
 import com.example.projeto_001.viewmodel.AllGuestsViewModel
+import kotlinx.android.synthetic.main.fragment_all.*
 
 class AllGuestsFragment : Fragment() {
 
     private lateinit var allGuestsViewModel: AllGuestsViewModel
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentAllBinding? = null
+    private val mAdapter: GuestAdapter = GuestAdapter()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -28,13 +34,17 @@ class AllGuestsFragment : Fragment() {
         allGuestsViewModel =
             ViewModelProvider(this).get(AllGuestsViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentAllBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        allGuestsViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+        val recycler = root.findViewById<RecyclerView>(R.id.recycler_all_guests)
+        recycler.layoutManager = LinearLayoutManager(context)
+        recycler.adapter = mAdapter
+
+        observer()
+
+        allGuestsViewModel.load()
+
         return root
     }
 
@@ -42,4 +52,11 @@ class AllGuestsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun observer() {
+        allGuestsViewModel.guestList.observe(viewLifecycleOwner, Observer {
+            mAdapter.updateGuests(it)
+        })
+    }
+
 }
